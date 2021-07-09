@@ -1,0 +1,106 @@
+buildscript {
+  ext {
+    // libraries
+    springBootVersion = '2.5.0'
+    lombokVersion = '1.18.20'
+    apacheCommonsVersion = '3.12.0'
+    hibernateValidatorVersion = '6.1.7.Final'
+    mockWebserverVersion = '4.9.0'
+    spotbugsAnnotationsVersion = '4.2.3'
+    httpComponentsVersion = '4.5.13'
+    reactorTestVersion = '3.4.6'
+
+    // plugins
+    spotlessPluginVersion = '5.12.5'
+    dependencyManagementPluginVersion = '1.0.11.RELEASE'
+    dependencyUpdatesPluginVersion = '0.39.0'
+    jacocoPluginVersion = '0.8.7'
+    libraryGradlePluginVersion = '2.1.0'
+    qualityPluginVersion = '4.6.0'
+  }
+  repositories {
+    maven { url "https://binrepo.target.com/artifactory/jcenter" }
+    maven { url "https://binrepo.target.com/artifactory/gradle" }
+    maven { url "https://binrepo.target.com/artifactory/maven-central" }
+    maven { url "https://binrepo.target.com/artifactory/TargetOSS" }
+    maven { url "https://binrepo.target.com/artifactory/transportation-libs" }
+  }
+  dependencies {
+    classpath "com.target.transportation:library-gradle-plugin:${libraryGradlePluginVersion}"
+  }
+}
+
+plugins {
+  id 'java-library'
+  id 'idea'
+  id 'jacoco'
+  id 'com.github.ben-manes.versions' version "${dependencyUpdatesPluginVersion}"
+  id 'com.diffplug.spotless' version "${spotlessPluginVersion}"
+  id 'io.spring.dependency-management' version "${dependencyManagementPluginVersion}"
+  id 'ru.vyarus.quality' version "${qualityPluginVersion}"
+}
+
+apply from: 'gradle/spotless.gradle'
+
+subprojects {
+  group 'com.tgt.crm'
+  version '2.3.0'
+  sourceCompatibility = 11
+
+  repositories {
+    maven { url "https://binrepo.target.com/artifactory/platform" }
+    maven { url "https://binrepo.target.com/artifactory/jcenter" }
+    maven { url "https://binrepo.target.com/artifactory/gradle" }
+    maven { url "https://binrepo.target.com/artifactory/maven-central" }
+  }
+
+  jar {
+    enabled = true
+  }
+
+  apply plugin: 'java-library'
+  apply plugin: 'io.spring.dependency-management'
+  apply plugin: 'jacoco'
+  apply plugin: 'idea'
+  apply plugin: 'com.target.transportation.library'
+  apply plugin: 'ru.vyarus.quality'
+  apply plugin: 'com.diffplug.spotless'
+
+  apply from: '../gradle/spotless.gradle'
+  apply from: '../gradle/checks.gradle'
+
+  library {
+    artifactoryRepo = 'SFDC'
+  }
+
+  dependencyManagement {
+    imports {
+      mavenBom("org.springframework.boot:spring-boot-dependencies:${springBootVersion}")
+    }
+  }
+
+  test {
+    // use junit5
+    useJUnitPlatform()
+  }
+
+  dependencies {
+    // used to copy & log headers on requests if debug enabled
+    implementation "org.apache.commons:commons-lang3:${apacheCommonsVersion}"
+    // used for bean validation
+    implementation "org.hibernate.validator:hibernate-validator:${hibernateValidatorVersion}"
+    // add support for PATCH to restTemplate
+    implementation "org.apache.httpcomponents:httpclient:${httpComponentsVersion}"
+    implementation 'io.micrometer:micrometer-core'
+
+    compileOnly "org.projectlombok:lombok:${lombokVersion}"
+    annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+    testCompileOnly "org.projectlombok:lombok:${lombokVersion}"
+    testAnnotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+    annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
+
+    testImplementation "org.springframework.boot:spring-boot-starter-test"
+    testImplementation "com.squareup.okhttp3:mockwebserver:${mockWebserverVersion}"
+    testImplementation "com.squareup.okhttp3:okhttp:${mockWebserverVersion}"
+  }
+}

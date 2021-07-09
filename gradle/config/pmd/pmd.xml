@@ -1,0 +1,120 @@
+<?xml version="1.0"?>
+
+<ruleset name="Custom Rules"
+  xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
+
+  <description>
+    Basic Java code quality rules
+  </description>
+
+  <!-- BEST PRACTICES -->
+  <rule ref="category/java/bestpractices.xml">
+    <!-- sometimes we want to assert multiple things in a test such as mapper
+      test -->
+    <exclude name="JUnitTestContainsTooManyAsserts" />
+    <!-- test name should describe desired output, too much work to add messages
+      to all asserts -->
+    <exclude name="JUnitAssertionsShouldIncludeMessage" />
+  </rule>
+
+  <rule ref="category/java/bestpractices.xml/GuardLogStatement">
+    <properties>
+      <property name="logLevels" value="trace,debug" />
+      <property name="guardsMethods"
+        value="isTraceEnabled,isDebugEnabled" />
+    </properties>
+  </rule>
+
+  <!-- ERROR PRONE -->
+  <rule ref="category/java/errorprone.xml">
+    <exclude name="DataflowAnomalyAnalysis" />
+    <exclude name="BeanMembersShouldSerialize" />
+  </rule>
+
+  <rule ref="category/java/errorprone.xml/CloseResource">
+    <properties>
+      <!--Ignore AtLeastOneConstructor on classes where the class name ends
+        with Test -->
+      <property name="violationSuppressXPath"
+        value="//ClassOrInterfaceDeclaration['.*Test']" />
+    </properties>
+  </rule>
+
+  <!-- CODE STYLE -->
+  <rule ref="category/java/codestyle.xml">
+    <!-- variables named "id" and "q" for query param should be okay -->
+    <exclude name="ShortVariable" />
+    <!-- unnecessary, no real advantage to making all local variables final -->
+    <exclude name="LocalVariableCouldBeFinal" />
+    <!-- recordType and platform type enums make many static imports convenient,
+      also test static imports -->
+    <exclude name="TooManyStaticImports" />
+    <!-- turn these two rules on eventaully after more refactoring -->
+    <exclude name="ConfusingTernary" />
+    <exclude name="OnlyOneReturn" />
+    <!-- Using DefaultPackage rule to prevent use of default package instead,
+      produces duplicate error messages -->
+    <exclude name="CommentDefaultAccessModifier" />
+  </rule>
+
+  <rule ref="category/java/codestyle.xml/MethodNamingConventions">
+    <properties>
+      <!-- adding underscore to method pattern for unit tests names -->
+      <property name="junit5TestPattern"
+        value="[a-z][a-zA-Z0-9_]*" />
+    </properties>
+  </rule>
+
+  <rule ref="category/java/codestyle.xml/LongVariable">
+    <properties>
+      <property name="minimum" value="30" />
+    </properties>
+  </rule>
+
+  <rule ref="category/java/codestyle.xml/ClassNamingConventions">
+    <properties>
+      <property name="utilityClassPattern"
+        value="[A-Z][a-zA-Z0-9]+(Utils?|Helper?|Constants?|Mapper)" />
+    </properties>
+  </rule>
+
+  <rule ref="category/java/codestyle.xml/AtLeastOneConstructor">
+    <properties>
+      <!--Ignore AtLeastOneConstructor on classes where the class name ends
+        with Test -->
+      <property name="violationSuppressXPath"
+        value="//ClassOrInterfaceDeclaration['.*Test']" />
+    </properties>
+  </rule>
+
+  <!-- PERFORMANCE -->
+  <rule ref="category/java/performance.xml" />
+
+  <!-- SECURITY -->
+  <rule ref="category/java/security.xml" />
+
+  <!-- MULTITHREADING -->
+  <rule ref="category/java/multithreading.xml">
+    <!-- not needed, no cases of multiple threads accessing a hash map -->
+    <exclude name="UseConcurrentHashMap" />
+  </rule>
+
+  <!-- DESIGN -->
+  <rule ref="category/java/design.xml">
+    <exclude name="LawOfDemeter" />
+    <exclude name="DataClass" />
+    <exclude name="LoosePackageCoupling" />
+    <exclude name="ExcessiveImports" />
+  </rule>
+
+  <rule ref="category/java/design.xml/TooManyMethods">
+    <properties>
+      <!--Ignore TooManyMethods on classes where the class name ends with Test -->
+      <property name="violationSuppressXPath"
+        value="//ClassOrInterfaceDeclaration['.*Test']" />
+    </properties>
+  </rule>
+
+</ruleset>

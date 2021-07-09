@@ -1,0 +1,145 @@
+quality {
+
+  /**
+   * When disabled, quality plugins will not be registered automatically (according to sources).
+   * Only manually registered quality plugins will be configured.
+   */
+  autoRegistration = true
+
+  // Enable/disable tools (when auto registration disabled control configuration appliance)
+
+  checkstyle = false
+  pmd = true
+  cpd = false
+  spotbugs = true
+  codenarc = false
+
+  /**
+   * Enable PMD incremental analysis (cache results between builds to speed up processing).
+   * This is a shortcut for pmd plugin's {@code pmd.incrementalAnalysis } configuration option.
+   * Option is disabled by default due to possible side effects with build gradle cache or incremental builds.
+   */
+  pmdIncremental = false
+
+  /**
+   * The analysis effort level. The value specified should be one of min, default, or max.
+   * Higher levels increase precision and find more bugs at the expense of running time and
+   * memory consumption. Default is 'max'.
+   */
+  spotbugsEffort = 'max'
+
+  /**
+   * The priority threshold for reporting bugs. If set to low, all bugs are reported.
+   * If set to medium, medium and high priority bugs are reported.
+   * If set to high, only high priority bugs are reported. Default is 'medium'.
+   */
+  spotbugsLevel = 'medium'
+
+  /**
+   * Spotbugs rank should be an integer value between 1 and 20, where 1 to 4 are scariest, 5 to 9 scary,
+   * 10 to 14 troubling, and 15 to 20 of concern bugs.
+   * <p>
+   * This option allows you to filter low-priority ranks: for example, setting {@code spotbugsMaxRank=15} will
+   * filter all bugs with ranks 16-20. Note that this is not the same as {@link #spotbugsLevel}:
+   * it has a bit different meaning (note that both priority and rank are shown for each spotbugs
+   * violation in console).
+   * <p>
+   * The only way to apply rank filtering is through exclude filter. Plugin will automatically generate
+   * additional rule in your exclude filter or in default one. But it may conflict with manual rank rule declaration
+   * (in case if you edit exclude filter manually), so be careful when enabling this option.
+   */
+  spotbugsMaxRank = 20
+
+  /**
+   * Max memory available for spotbugs task. Note that in gradle 4 spotbugs task maximum memory was
+   * 1/4 of physical memory, but in gradle 5 it become only 512mb (default for workers api).
+   * To minify impact of this gradle 5 change, default value in extension is 1g now, but it may be not
+   * enough for large projects (and so you will have to increase it manually).
+   * <p>
+   * IMPORTANT: setting will not work if heap size configured directly in spotbugs task (for example, with
+   * <code>spotbugsMain.maxHeapSize = '2g'</code>. This was done in order to not break current behaviour
+   * (when task memory is already configured) and affect only default cases (mostly caused by gradle 5 transition).
+   * <p>
+   * See: https://github.com/gradle/gradle/issues/6216 (Reduce default memory settings for daemon and
+   * workers).
+   */
+  spotbugsMaxHeapSize = '2g'
+
+  /**
+   * Javac lint options to show compiler warnings, not visible by default.
+   * Applies to all CompileJava tasks.
+   * Options will be added as -Xlint:option
+   * Full list of options: http://docs.oracle.com/javase/8/docs/technotes/tools/windows/javac.html#BHCJCABJ
+   */
+  lintOptions = ['deprecation', 'unchecked']
+
+  /**
+   * Strict quality leads to build fail on any violation found. If disabled, all violation
+   * are just printed to console.
+   */
+  strict = true
+
+  /**
+   * When false, disables quality tasks execution. Allows disabling tasks without removing plugins.
+   * Quality tasks are still registered, but skip execution, except when task called directly or through
+   * checkQualityMain (or other source set) grouping task.
+   */
+  enabled = true
+
+  /**
+   * When false, disables reporting quality issues to console. Only gradle general error messages will
+   * remain in logs. This may be useful in cases when project contains too many warnings.
+   * Also, console reporting require xml reports parsing, which could be time consuming in case of too
+   * many errors (large xml reports).
+   * True by default.
+   */
+  consoleReporting = true
+
+  /**
+   * When false, no html reports will be built. True by default.
+   */
+  htmlReports = true
+
+  /**
+   * Source sets to apply checks on.
+   * Default is [sourceSets.main] to apply only for project sources, excluding tests.
+   */
+  sourceSets = project.sourceSets
+
+  /**
+   * Source patterns (relative to source dir) to exclude from checks. Simply sets exclusions to quality tasks.
+   *
+   * Animalsniffer is not affected because
+   * it's a different kind of check (and, also, it operates on classes so source patterns may not comply).
+   *
+   * Spotbugs does not support exclusion directly, but plugin will resolve excluded classes and apply
+   * them to xml exclude file (default one or provided by user).
+   *
+   * By default nothing is excluded.
+   *
+   * IMPORTANT: Patterns are checked relatively to source set dirs (not including them). So you can only
+   * match source files and packages, but not absolute file path (this is gradle specific, not plugin).
+   *
+   * @see org.gradle.api.tasks.SourceTask#exclude(java.lang.Iterable) (base class for all quality tasks)
+   */
+  exclude = []
+
+  /**
+   * Direct sources to exclude from checks (except animalsniffer).
+   * This is useful as last resort, when extension or package is not enough for filtering.
+   * Use {@link Project#files(java.lang.Object)} or {@link Project#fileTree(java.lang.Object)}
+   * to create initial collections and apply filter on it (using
+   * {@link org.gradle.api.file.FileTree#matching(groovy.lang.Closure)}).
+   *
+   * Plugin will include files into spotbugs exclusion filter xml (default one or provided by user).
+   *
+   * Note: this must be used when excluded classes can't be extracted to different source set and
+   * filter by package and filename is not sufficient.
+   */
+  FileCollection excludeSources
+
+  /**
+   * User configuration files directory. Files in this directory will be used instead of default (bundled) configs.
+   */
+  configDir = 'gradle/config/'
+}

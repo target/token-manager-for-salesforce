@@ -1,0 +1,39 @@
+buildscript {
+  ext {
+    springBootVersion = '2.2.0.RELEASE'
+    tokenManagerVersion = '2.0.0'
+    dependencyManagementVersion = '1.0.11.RELEASE'
+    lombokVersion = '1.18.20'
+  }
+  repositories {
+    maven { url "https://binrepo.target.com/artifactory/maven-central" }
+    maven { url "https://binrepo.target.com/artifactory/google" }
+  }
+  dependencies {
+    classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
+  }
+}
+
+plugins {
+  id 'java'
+  id 'org.springframework.boot' version "${springBootVersion}"
+  id 'io.spring.dependency-management' version "${dependencyManagementVersion}"
+}
+
+group = 'com.tgt.crm.mvc'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '11'
+
+repositories {
+  maven { url "https://binrepo.target.com/artifactory/maven-central" }
+  maven { url "https://binrepo.target.com/artifactory/google" }
+  maven { url "https://binrepo.target.com/artifactory/SFDC" }
+}
+
+dependencies {
+  implementation "com.tgt.crm:token-manager-for-salesforce-webmvc:${tokenManagerVersion}"
+  implementation 'org.springframework.boot:spring-boot-starter-web'
+  compileOnly "org.projectlombok:lombok:${lombokVersion}"
+  annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+}
+

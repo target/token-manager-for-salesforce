@@ -1,0 +1,38 @@
+version: "1"
+
+templates:
+  - name: template
+    source: git.target.com/CRMDomainServices/vela-templates/gradle-library/template.yml
+    type: github
+
+steps:
+  - name: template
+    template:
+      name: template
+
+secrets:
+  - name: artifactory_username
+    key: CRMDomainServices/docker_username
+    type: org
+    engine: native
+  - name: artifactory_password
+    key: CRMDomainServices/docker_password
+    type: org
+    engine: native
+  - name: slack_webhook
+    key: CRMDomainServices/slack_webhook
+    type: org
+    engine: native
+  # Shared secrets for Vela team s3 bucket
+  - name: cache_s3_access_key
+    key: vela/prod-secrets/cache_s3_access_key
+    engine: native
+    type: shared
+  - name: cache_s3_secret_key
+    key: vela/prod-secrets/cache_s3_secret_key
+    engine: native
+    type: shared
+  - name: cache_s3_server
+    key: vela/prod-secrets/cache_s3_server
+    engine: native
+    type: shared

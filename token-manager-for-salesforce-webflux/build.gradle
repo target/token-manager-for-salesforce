@@ -55,7 +55,7 @@ idea {
     testSourceDirs += sourceSets.testintegration.java.srcDirs
     testResourceDirs += sourceSets.testintegration.resources.srcDirs
     scopes.TEST.plus += [
-      configurations.testintegrationCompile
+      configurations.testintegrationCompileClasspath
     ]
   }
 }
@@ -90,6 +90,6 @@ dependencies {
   api project(':token-manager-for-salesforce-core')
   implementation "org.springframework.boot:spring-boot-starter-webflux"
   implementation "org.springframework.boot:spring-boot-starter-actuator"
-  testCompile "io.projectreactor:reactor-test:${reactorTestVersion}"
+  testImplementation "io.projectreactor:reactor-test:${reactorTestVersion}"
   testintegrationImplementation(testFixtures(project(":token-manager-for-salesforce-core")))
 }

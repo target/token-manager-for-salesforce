@@ -6,8 +6,9 @@ buildscript {
     lombokVersion = '1.18.20'
   }
   repositories {
-    maven { url "https://binrepo.target.com/artifactory/maven-central" }
-    maven { url "https://binrepo.target.com/artifactory/google" }
+    mavenCentral()
+    jcenter()
+    google()
   }
   dependencies {
     classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
@@ -25,9 +26,9 @@ version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '11'
 
 repositories {
-  maven { url "https://binrepo.target.com/artifactory/maven-central" }
-  maven { url "https://binrepo.target.com/artifactory/google" }
-  maven { url "https://binrepo.target.com/artifactory/SFDC" }
+  mavenCentral()
+  jcenter()
+  google()
 }
 
 dependencies {

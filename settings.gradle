@@ -4,4 +4,3 @@ include 'token-manager-for-salesforce-core'
 include 'token-manager-for-salesforce-webflux'
 include 'token-manager-for-salesforce-webmvc'
 include 'token-manager-for-salesforce-core'
-

@@ -37,9 +37,13 @@ plugins {
 
 apply from: 'gradle/spotless.gradle'
 
+task sourcesJar(type: Jar) {
+  from sourceSets.main.allJava
+  archiveClassifier = 'sources'
+}
+
 subprojects {
   group 'com.tgt.crm'
-  version '1.0.0'
   sourceCompatibility = 11
 
   repositories {
@@ -63,6 +67,12 @@ subprojects {
   apply from: '../gradle/checks.gradle'
 
   publishing {
+    publications {
+      maven(MavenPublication) {
+        from components.java
+        artifact sourcesJar
+      }
+    }
     repositories {
       maven {
         name = "GitHubPackages"

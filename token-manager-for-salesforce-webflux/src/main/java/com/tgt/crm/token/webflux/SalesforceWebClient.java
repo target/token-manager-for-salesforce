@@ -64,6 +64,7 @@ public class SalesforceWebClient {
         .build();
   }
 
+  /** Uses deprecated configuration to support older versions of spring boot */
   @Bean
   @Qualifier("sfWebClient")
   @ConditionalOnMissingClass("reactor.netty.transport.logging.AdvancedByteBufFormat")

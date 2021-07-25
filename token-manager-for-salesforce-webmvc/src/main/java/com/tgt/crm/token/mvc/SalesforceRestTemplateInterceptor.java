@@ -48,6 +48,7 @@ public class SalesforceRestTemplateInterceptor implements ClientHttpRequestInter
     // if we get a 401, refresh the token and try request again
     if (response.getStatusCode() == HttpStatus.UNAUTHORIZED) {
       log.info("received 401 response, refreshing token");
+      response.close();
       request.getHeaders().set(HttpHeaders.AUTHORIZATION, salesForceMvcAuthClient.refreshToken());
       response = execution.execute(request, body);
       logResponse(response);

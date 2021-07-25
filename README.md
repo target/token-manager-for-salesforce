@@ -1,4 +1,4 @@
-# Token Manager for Salesforce [![Build Status](https://vela-server.prod.target.com/badge/CRMDomainServices/token-manager-for-salesforce/status.svg)](https://vela.prod.target.com/CRMDomainServices/token-manager-for-salesforce)
+# Token Manager for Salesforce
 
 This project makes Salesforce API calls with Spring a breeze. It exposes either a RestTemplate or WebClient that handles generating, refreshing and attaching an auth token header for every API call. Just pass in your instance and user credentials via `application.yml`, autowire your desired bean and it takes care of the rest.
 

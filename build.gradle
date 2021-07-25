@@ -1,17 +1,17 @@
 buildscript {
   ext {
     // libraries
-    springBootVersion = '2.5.0'
+    springBootVersion = '2.5.3'
     lombokVersion = '1.18.20'
     apacheCommonsVersion = '3.12.0'
     hibernateValidatorVersion = '6.1.7.Final'
-    mockWebserverVersion = '4.9.0'
-    spotbugsAnnotationsVersion = '4.2.3'
+    mockWebserverVersion = '4.9.1'
+    spotbugsAnnotationsVersion = '4.3.0'
     httpComponentsVersion = '4.5.13'
-    reactorTestVersion = '3.4.6'
+    reactorTestVersion = '3.4.8'
 
     // plugins
-    spotlessPluginVersion = '5.12.5'
+    spotlessPluginVersion = '5.14.2'
     dependencyManagementPluginVersion = '1.0.11.RELEASE'
     dependencyUpdatesPluginVersion = '0.39.0'
     jacocoPluginVersion = '0.8.7'
@@ -19,14 +19,9 @@ buildscript {
     qualityPluginVersion = '4.6.0'
   }
   repositories {
-    maven { url "https://binrepo.target.com/artifactory/jcenter" }
-    maven { url "https://binrepo.target.com/artifactory/gradle" }
-    maven { url "https://binrepo.target.com/artifactory/maven-central" }
-    maven { url "https://binrepo.target.com/artifactory/TargetOSS" }
-    maven { url "https://binrepo.target.com/artifactory/transportation-libs" }
-  }
-  dependencies {
-    classpath "com.target.transportation:library-gradle-plugin:${libraryGradlePluginVersion}"
+    mavenCentral()
+    jcenter()
+    google()
   }
 }
 
@@ -34,6 +29,7 @@ plugins {
   id 'java-library'
   id 'idea'
   id 'jacoco'
+  id 'maven-publish'
   id 'com.github.ben-manes.versions' version "${dependencyUpdatesPluginVersion}"
   id 'com.diffplug.spotless' version "${spotlessPluginVersion}"
   id 'io.spring.dependency-management' version "${dependencyManagementPluginVersion}"
@@ -44,14 +40,26 @@ apply from: 'gradle/spotless.gradle'
 
 subprojects {
   group 'com.tgt.crm'
-  version '2.3.0'
+  version '1.0.0'
   sourceCompatibility = 11
 
+  publishing {
+    repositories {
+      maven {
+        name = "GitHubPackages"
+        url = "https://maven.pkg.github.com/target/token-manager-for-salesforce"
+        credentials {
+          username = System.getenv("GITHUB_ACTOR")
+          password = System.getenv("GITHUB_TOKEN")
+        }
+      }
+    }
+  }
+
   repositories {
-    maven { url "https://binrepo.target.com/artifactory/platform" }
-    maven { url "https://binrepo.target.com/artifactory/jcenter" }
-    maven { url "https://binrepo.target.com/artifactory/gradle" }
-    maven { url "https://binrepo.target.com/artifactory/maven-central" }
+    mavenCentral()
+    jcenter()
+    google()
   }
 
   jar {
@@ -62,16 +70,11 @@ subprojects {
   apply plugin: 'io.spring.dependency-management'
   apply plugin: 'jacoco'
   apply plugin: 'idea'
-  apply plugin: 'com.target.transportation.library'
   apply plugin: 'ru.vyarus.quality'
   apply plugin: 'com.diffplug.spotless'
 
   apply from: '../gradle/spotless.gradle'
   apply from: '../gradle/checks.gradle'
-
-  library {
-    artifactoryRepo = 'SFDC'
-  }
 
   dependencyManagement {
     imports {
@@ -89,7 +92,6 @@ subprojects {
     implementation "org.apache.commons:commons-lang3:${apacheCommonsVersion}"
     // used for bean validation
     implementation "org.hibernate.validator:hibernate-validator:${hibernateValidatorVersion}"
-    // add support for PATCH to restTemplate
     implementation "org.apache.httpcomponents:httpclient:${httpComponentsVersion}"
     implementation 'io.micrometer:micrometer-core'
 
@@ -102,5 +104,17 @@ subprojects {
     testImplementation "org.springframework.boot:spring-boot-starter-test"
     testImplementation "com.squareup.okhttp3:mockwebserver:${mockWebserverVersion}"
     testImplementation "com.squareup.okhttp3:okhttp:${mockWebserverVersion}"
+  }
+}
+
+def isNonStable = { String version ->
+  def stableKeyword = ['RELEASE', 'FINAL', 'GA'].any { it -> version.toUpperCase().contains(it) }
+  def regex = /^[0-9,.v-]+(-r)?$/
+  return !stableKeyword && !(version ==~ regex)
+}
+
+tasks.named("dependencyUpdates").configure {
+  rejectVersionIf {
+    isNonStable(it.candidate.version)
   }
 }

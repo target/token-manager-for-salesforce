@@ -1,0 +1,98 @@
+// === configure jacoco ===
+
+jacoco {
+  toolVersion = "${jacocoPluginVersion}"
+}
+
+def jacocoExcludes = [
+  '**/AuthRestTemplate.class',
+  '**/SalesforceLibraryAutoConfiguration.class',
+  '**/SalesforceRestTemplate.class',
+  '**/WebMvcHttpClientConfig.class',
+  '**/WebMvcHttpClientConstants.class'
+]
+
+jacocoTestReport {
+  afterEvaluate {
+    classDirectories.setFrom(files(classDirectories.files.collect {
+      fileTree(dir: it, exclude: jacocoExcludes)
+    }))
+  }
+}
+
+jacocoTestCoverageVerification {
+  afterEvaluate {
+    classDirectories.setFrom(files(classDirectories.files.collect {
+      fileTree(dir: it, exclude: jacocoExcludes)
+    }))
+  }
+  violationRules {
+    rule {
+      limit {
+        value = 'COVEREDRATIO'
+        counter = 'LINE'
+        minimum = 0.70
+      }
+    }
+  }
+}
+
+// check will fail if minimum code coverage % is not met
+check.dependsOn jacocoTestCoverageVerification
+// generate a report of code coverage in build directory after test task is run
+test.finalizedBy jacocoTestReport
+
+// === define integration test source set ===
+
+sourceSets {
+  testintegration {
+    compileClasspath += sourceSets.main.output
+    runtimeClasspath += sourceSets.main.output
+  }
+}
+
+idea {
+  module {
+    // configures IntelliJ to recognize integrationTest sources as tests
+    testSourceDirs += sourceSets.testintegration.java.srcDirs
+    testResourceDirs += sourceSets.testintegration.resources.srcDirs
+    scopes.TEST.plus += [
+      configurations.testintegrationCompileClasspath
+    ]
+  }
+}
+
+// define new testintegration task
+task testintegration(type: Test) {
+  systemProperty "spring.profiles.active", System.getProperty("spring.profiles.active")
+  description = 'Runs integration tests.'
+  group = 'verification'
+  useJUnitPlatform() // use Junit5
+  testClassesDirs = sourceSets.testintegration.output.classesDirs
+  classpath = sourceSets.testintegration.runtimeClasspath
+  shouldRunAfter test
+  testLogging.exceptionFormat = 'full'
+}
+
+configurations {
+  compileOnly {
+    extendsFrom annotationProcessor
+  }
+  // makes lombok available for integration tests
+  testintegrationImplementation.extendsFrom testImplementation
+  testintegrationCompileOnly.extendsFrom compileOnly
+  testintegrationAnnotationProcessor.extendsFrom annotationProcessor
+}
+
+check.dependsOn testintegration
+
+// === module dependencies ===
+
+dependencies {
+  api project(':token-manager-for-salesforce-core')
+  implementation 'org.springframework.boot:spring-boot-starter-web'
+  implementation 'org.springframework.retry:spring-retry'
+  implementation 'org.springframework.boot:spring-boot-starter-aop'
+  implementation "org.springframework.boot:spring-boot-starter-actuator"
+  testintegrationImplementation(testFixtures(project(":token-manager-for-salesforce-core")))
+}

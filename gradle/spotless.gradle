@@ -1,0 +1,44 @@
+spotless {
+  java {
+    googleJavaFormat()
+  }
+  format 'misc', {
+    target '**/*.md', '**/.gitignore'
+    trimTrailingWhitespace()
+    indentWithSpaces(2)
+    endWithNewline()
+  }
+  groovyGradle {
+    target 'build.gradle', 'gradle/*.gradle'
+    targetExclude 'out/**', 'build/**', '.idea/**', '.gradle/**'
+    greclipse()
+    trimTrailingWhitespace()
+    indentWithSpaces(2)
+    endWithNewline()
+  }
+  format 'xml', {
+    target fileTree('.') {
+      include '**/*.xml', '**/*.xsd'
+      exclude '**/build/**', 'out/**', '.idea/**', '**/.gradle/**', '**/pom.xml'
+    }
+    eclipseWtp('xml')
+    indentWithSpaces(2)
+    trimTrailingWhitespace()
+  }
+  format 'json', {
+    target '**/*.json'
+    targetExclude 'out/**', 'build/**', '.idea/**', '.gradle/**'
+    eclipseWtp('json')
+    indentWithSpaces(2)
+    trimTrailingWhitespace()
+  }
+  // requires node, not present on current docker image
+  //  format 'yaml', {
+  //    target '**/*.yml', '**/*.yaml'
+  //    targetExclude 'out/**', 'build/**', '.idea/**', '.gradle/**'
+  //    prettier().config(['parser': 'yaml'])
+  //    trimTrailingWhitespace()
+  //    indentWithSpaces(2)
+  //    endWithNewline()
+  //  }
+}

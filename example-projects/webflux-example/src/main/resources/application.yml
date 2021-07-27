@@ -1,0 +1,15 @@
+salesforce:
+  host: ${SF_HOST}
+  username: ${SF_USERNAME}
+  password: ${SF_PASSWORD}
+  client-id: ${SF_CLIENT_ID}
+  client-secret: ${SF_CLIENT_SECRET}
+  httpclient:
+    max-conn-per-route: 20
+    read-timeout: 30000
+    connection-timeout: 60000
+
+logging:
+  level:
+    com.tgt.crm.token: TRACE
+    reactor.netty: TRACE

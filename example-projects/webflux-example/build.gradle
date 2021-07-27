@@ -1,7 +1,7 @@
 buildscript {
   ext {
     springBootVersion = '2.2.6.RELEASE'
-    tokenManagerVersion = '2.0.0'
+    tokenManagerVersion = '1.0.0'
     dependencyManagementVersion = '1.0.11.RELEASE'
     lombokVersion = '1.18.20'
   }
@@ -27,6 +27,14 @@ sourceCompatibility = '11'
 repositories {
   mavenCentral()
   google()
+  maven {
+    name = "GitHubPackages"
+    url = uri("https://maven.pkg.github.com/target/token-manager-for-salesforce")
+    credentials {
+      username = project.findProperty("gpr.user") ?: System.getenv("USERNAME")
+      password = project.findProperty("gpr.token") ?: System.getenv("TOKEN")
+    }
+  }
 }
 
 dependencies {

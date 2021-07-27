@@ -39,9 +39,7 @@ public class SalesforceWebfluxAuthClient {
     // will be null on first call to Salesforce
     if (this.token == null) {
       log.info("token is null, calling refresh token to generate first token");
-      return refreshToken()
-          .doOnError(error -> log.error("Error generating token. ", error))
-          .doOnSuccess(success -> log.info("token generated successfully"));
+      return refreshToken();
     }
     return Mono.just(this.token);
   }
@@ -57,10 +55,16 @@ public class SalesforceWebfluxAuthClient {
             Retry.backoff(
                     salesforceConfig.getMaxAuthTokenRetries(),
                     Duration.ofMillis(salesforceConfig.getRetryBackoffDelay()))
+                .onRetryExhaustedThrow(
+                    (spec, signal) -> {
+                      log.error("retries exhausted");
+                      // throw original exception instead of RetryExhaustedException wrapper
+                      return signal.failure();
+                    })
                 .doAfterRetry(retry -> log.error("Retry failed. ", retry.failure())))
         .doOnError(
             error -> {
-              log.error("token refresh failed");
+              log.error("token refresh failed", error);
               meterRegistry
                   .counter(EXCEPTION_COUNTER, EXCEPTION_TYPE_TAG, TOKEN_REFRESH_EXCEPTION)
                   .increment();

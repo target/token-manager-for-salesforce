@@ -4,11 +4,18 @@ This project makes Salesforce API calls with Spring a breeze. It exposes either 
 
 ## Usage
 
-To use this library, add one of the repositories declaration and one of the following dependencies to your project's `build.gradle` file. This will include the core module as well automatically.
+To use this library, the following repository declaration and one of the dependencies to your project's `build.gradle` file. This will include the core module as well automatically.
 
 ```groovy
 repositories {
-  maven { url "https://binrepo.target.com/artifactory/SFDC" }
+  maven {
+    name = "GitHubPackages"
+    url = uri("https://maven.pkg.github.com/target/token-manager-for-salesforce")
+    credentials {
+      username = project.findProperty("gpr.user") ?: System.getenv("USERNAME")
+      password = project.findProperty("gpr.token") ?: System.getenv("TOKEN")
+    }
+  }
 }
 dependencies {
   // for reactive applications
@@ -18,7 +25,7 @@ dependencies {
 }
 ```
 
-Find the latest version in the "releases" section of this repo.
+Find the latest version in the "packages" section of this repo. You will need access to the Github repository and will need to make your user and a personal access token available as a project or system property to authorize with Github and download the package. More details can be found [here](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-gradle-registry).
 
 Add the following to your `application.yml` file to pass in Salesforce properties from TAP secrets/environment variables. You can set explicit values for these properties instead of environment variables if you prefer. Ensure you don't check any secrets into Git.
 
@@ -142,7 +149,7 @@ Where `../token-manager-for-salesforce` is the relative path to this project on 
 
 ## Publish a new version
 
-Make the desired changes locally. Increment the `version` property declared in `build.gradle` following [semantic versioning](https://semver.org/). Open a PR against the master branch, get it reviewed and merge. Tag this commit with a tag matching the `version` from `build.gradle`. This will trigger a new deployment of the library to [Artifactory](https://binrepo.target.com/artifactory/webapp/#/artifacts/browse/tree/General/SFDC/com/tgt/crm).
+Make the desired changes locally. Open a PR against the master branch, get it reviewed and merge. Tag this commit with a tag following [semantic versioning](https://semver.org/). This will trigger a new deployment of the library to [Github Packages](https://github.com/orgs/target/packages?repo_name=token-manager-for-salesforce).
 
 ## Troubleshooting
 

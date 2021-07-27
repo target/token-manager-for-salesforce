@@ -79,7 +79,7 @@ public class SalesforceMvcAuthClient {
     assert salesforceAuthResponseEntity.getBody() != null
         : "salesforce auth response body should never be null";
     this.token = salesforceAuthResponseEntity.getBody().getSalesforceAuthToken();
-    log.debug("token successfully generated");
+    log.info("token successfully generated");
     return this.token;
   }
 

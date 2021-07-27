@@ -68,9 +68,8 @@ subprojects {
 
   publishing {
     publications {
-      maven(MavenPublication) {
-        from components.java
-        artifact sourcesJar
+      gpr(MavenPublication) {
+        from(components.java)
       }
     }
     repositories {

@@ -2,7 +2,13 @@ name: PR Validation
 
 on:
   pull_request:
-    branches: [ main ]
+    branches:
+      - main
+  release:
+    types:
+      - created
+    branches:
+      - main
 
 jobs:
   build:

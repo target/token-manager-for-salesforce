@@ -1,0 +1,10 @@
+logging:
+  level:
+    com.tgt.crm: TRACE
+
+salesforce:
+  username: username
+  password: password!@#$%^&*()
+  client-id: clientId
+  client-secret: clientSecret
+  retry-backoff-delay: 50

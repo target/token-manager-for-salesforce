@@ -1,0 +1,8 @@
+{
+  "access_token": "new bearerToken",
+  "instance_url": "instanceUrl",
+  "id": "tokenId",
+  "token_type": "Bearer",
+  "issued_at": "1585760950027",
+  "signature": "tokenSignature"
+}

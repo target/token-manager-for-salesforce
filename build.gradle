@@ -4,7 +4,7 @@ buildscript {
     springBootVersion = '2.5.3'
     lombokVersion = '1.18.20'
     apacheCommonsVersion = '3.12.0'
-    hibernateValidatorVersion = '6.1.7.Final'
+    hibernateValidatorVersion = '7.0.1.Final'
     mockWebserverVersion = '4.9.1'
     spotbugsAnnotationsVersion = '4.3.0'
     httpComponentsVersion = '4.5.13'

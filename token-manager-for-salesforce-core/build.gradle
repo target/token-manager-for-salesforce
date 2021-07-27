@@ -1,0 +1,18 @@
+plugins {
+  id 'java-test-fixtures'
+}
+
+// === module dependencies ===
+
+dependencies {
+  implementation "com.fasterxml.jackson.core:jackson-annotations"
+  implementation "org.springframework.boot:spring-boot-starter"
+  testFixturesImplementation "com.squareup.okhttp3:mockwebserver:${mockWebserverVersion}"
+  testFixturesImplementation "com.squareup.okhttp3:okhttp:${mockWebserverVersion}"
+  testFixturesImplementation "org.springframework.boot:spring-boot-starter-test"
+  testFixturesImplementation "org.springframework:spring-web"
+  testFixturesCompileOnly "org.projectlombok:lombok:${lombokVersion}"
+  testFixturesAnnotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+  testFixturesImplementation "com.fasterxml.jackson.core:jackson-databind"
+  testFixturesCompileOnly "com.github.spotbugs:spotbugs-annotations:${spotbugsAnnotationsVersion}"
+}

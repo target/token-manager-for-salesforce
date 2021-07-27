@@ -1,0 +1,3 @@
+rootProject.name = 'webmvc-example'
+
+includeBuild '../../../token-manager-for-salesforce'

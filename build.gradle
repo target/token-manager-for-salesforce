@@ -6,7 +6,7 @@ buildscript {
     apacheCommonsVersion = '3.12.0'
     hibernateValidatorVersion = '6.1.7.Final'
     mockWebserverVersion = '4.9.1'
-    spotbugsAnnotationsVersion = '4.3.0'
+    spotbugsAnnotationsVersion = '4.4.1'
     httpComponentsVersion = '4.5.13'
     reactorTestVersion = '3.4.8'
 

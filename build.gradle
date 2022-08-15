@@ -11,7 +11,7 @@ buildscript {
     reactorTestVersion = '3.4.8'
 
     // plugins
-    spotlessPluginVersion = '5.14.2'
+    spotlessPluginVersion = '6.9.1'
     dependencyManagementPluginVersion = '1.0.11.RELEASE'
     dependencyUpdatesPluginVersion = '0.39.0'
     jacocoPluginVersion = '0.8.7'
